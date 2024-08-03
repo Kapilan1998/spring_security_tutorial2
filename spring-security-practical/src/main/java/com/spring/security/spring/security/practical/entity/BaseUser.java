@@ -13,7 +13,7 @@ public class BaseUser {
     private String userName;
     private String name;
     private String password;
-    //    @Enumerated(EnumType.ORDINAL)       //by default this will consider as default and relevant field number will be saved to db
+    // @Enumerated(EnumType.ORDINAL)       //by default this will consider as default and relevant field number will be saved to db
     @Enumerated(EnumType.STRING)
     private Role role;
 

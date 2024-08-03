@@ -7,7 +7,6 @@ import jakarta.persistence.Id;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
-
 import java.math.BigDecimal;
 
 @Entity
