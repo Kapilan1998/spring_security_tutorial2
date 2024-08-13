@@ -1,6 +1,7 @@
 package com.spring.security.spring.security.practical.config;
 
 import com.spring.security.spring.security.practical.entity.BaseUser;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -24,7 +25,7 @@ public class JwtService {
 
         Date issuedat = new Date(System.currentTimeMillis());
         Date expiresAt = new Date(issuedat.getTime() + (expirationInMinutes*60*1000));
-        Jwts.builder()
+        return Jwts.builder()
                 .setClaims(extraClaims)
                 .setSubject(baseUser.getName())
                 .setIssuedAt(issuedat)
@@ -39,5 +40,14 @@ public class JwtService {
         return Keys.hmacShaKeyFor(keyInformatory);
     }
 
-    //48.10
+    public String extractUserName(String jwt) {
+//      return  Jwts.parserBuilder().setSigningKey(generateKey()).build()
+//                 .parseClaimsJws(jwt).getBody().getSubject();
+
+        return  Jwts.parser().setSigningKey(generateKey()).build().parseSignedClaims(jwt).getPayload().getSubject();
+    }
+
+
+
+    //55.10
 }
