@@ -6,6 +6,7 @@ import com.spring.security.spring.security.practical.repository.BaseUserReposito
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -20,6 +21,23 @@ public class AuthenticationService {
     BaseUserRepository baseUserRepository;
     @Autowired
     JwtService jwtService;
+    private final PasswordEncoder passwordEncoder;
+
+    public AuthenticationService(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
+
+    public AuthenticationResponse register(BaseUser request) {
+        var baseUser = new BaseUser();
+        baseUser.setName(request.getName());
+        baseUser.setUserName(request.getUsername());
+        baseUser.setPassword(passwordEncoder.encode(request.getPassword()));
+        baseUser.setRole(request.getRole());
+        baseUserRepository.save(baseUser);
+
+        String jwtToken = jwtService.generateToken(baseUser, generateExtraClaims(baseUser));
+        return new AuthenticationResponse(jwtToken);
+    }
 
     public AuthenticationResponse login(AuthenticationRequest authenticationRequest) {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
@@ -28,15 +46,16 @@ public class AuthenticationService {
         authenticationManager.authenticate(usernamePasswordAuthenticationToken);
         BaseUser baseUser = baseUserRepository.findByUserName(authenticationRequest.getUserName()).get();
 
-        String jwt = jwtService.generateToken(baseUser,generateExtraClaims(baseUser));
+        String jwt = jwtService.generateToken(baseUser, generateExtraClaims(baseUser));
         return new AuthenticationResponse(jwt);
     }
 
-    private Map<String,Object> generateExtraClaims(BaseUser baseUser) {
-        Map<String,Object> extraClaims = new HashMap<>();
-        extraClaims.put("name",baseUser.getName());
-        extraClaims.put("role",baseUser.getRole().name());
+    private Map<String, Object> generateExtraClaims(BaseUser baseUser) {
+        Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("name", baseUser.getName());
+        extraClaims.put("role", baseUser.getRole().name());
 
         return extraClaims;
     }
 }
+

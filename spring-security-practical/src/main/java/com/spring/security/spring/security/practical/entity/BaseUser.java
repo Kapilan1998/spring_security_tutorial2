@@ -30,8 +30,9 @@ public class BaseUser implements UserDetails {
 
     @Override
     public String getUsername() {
-        return "";
+        return userName;
     }
+
 
     @Override
     public boolean isAccountNonExpired() {
