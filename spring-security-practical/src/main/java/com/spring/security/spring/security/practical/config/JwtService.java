@@ -44,7 +44,7 @@ public class JwtService {
 //      return  Jwts.parserBuilder().setSigningKey(generateKey()).build()
 //                 .parseClaimsJws(jwt).getBody().getSubject();
 
-        return  Jwts.parser().setSigningKey(generateKey()).build().parseSignedClaims(jwt).getPayload().getSubject();
+        return  Jwts.parser().setSigningKey(generateKey()).build().parseClaimsJws(jwt).getBody().getSubject();
     }
 
 
